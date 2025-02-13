@@ -7,9 +7,9 @@ import (
 )
 
 /*
-       c a,-4-,bc
+       e a,-4-,bc
     1 - 2 - 3 - 5 - 6
-   a b a b a b b a a b
+   a b c d a b b a a b
 */
 
 func TestFind(t *testing.T) {
@@ -21,8 +21,8 @@ func TestFind(t *testing.T) {
 	six := graph.NewNode[int, string](6)
 
 	one.ConnectBi("a", "b")
-	two.ConnectBi("a", "b")
-	two.ConnectBi("a", "c")
+	two.ConnectBi("c", "d")
+	two.ConnectBi("c", "e")
 	three.ConnectBi("a", "b")
 	four.ConnectBi("a", "b")
 	five.ConnectBi("a", "b")
@@ -37,14 +37,18 @@ func TestFind(t *testing.T) {
 	graph.AddNode(five)
 	graph.AddNode(six)
 
-	graph.ConnectRefBi(1, "b", 2, "a")
-	graph.ConnectRefBi(2, "b", 3, "a")
-	graph.ConnectRefBi(2, "c", 4, "a")
+	graph.ConnectRefBi(1, "b", 2, "c")
+	graph.ConnectRefBi(2, "d", 3, "a")
+	graph.ConnectRefBi(2, "e", 4, "a")
 	graph.ConnectRefBi(3, "b", 5, "b")
 	graph.ConnectRefBi(4, "b", 5, "c")
 	graph.ConnectRefBi(5, "a", 6, "a")
 
-	paths := graph.FindRef(1, "b", 4, "b")
+	paths, err := graph.FindRef(1, "b", 4, "b")
+	if err != nil {
+		t.Fatalf("error when finding paths: %s", err)
+	}
+
 	if len(paths) != 1 {
 		t.Fatalf("expected 1 path, but got %d: %v", len(paths), paths)
 	}
@@ -54,7 +58,7 @@ func TestFind(t *testing.T) {
 		t.Fatalf("path has wrong length: expected 3, but got %d: %v", len(path), path)
 	}
 
-	if path[0].Id() != 1 || path[1].Id() != 2 || path[2].Id() != 4 {
+	if path[0].Middle.Id() != 1 || path[1].Middle.Id() != 2 || path[2].Middle.Id() != 4 {
 		t.Fatalf("expected path to be 1 -> 2 -> 4 but got %v", path)
 	}
 }
