@@ -1,60 +1,20 @@
-name: Go Workflow
+name: Go
 
 on:
   push:
     branches: ["**"]
 
 jobs:
-  build:
+  all-in-one:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/checkout@v4
+      - uses: wagoid/commitlint-github-action@v6
+      - uses: actions/setup-go@v5
         with:
-          go-version: "1.23"
+          go-version: "1.24"
           check-latest: true
-
-      - name: Build
-        run: go build ./...
-
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.23"
-          check-latest: true
-
-      - name: Test
-        run: go test -json ./...
-
-  lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.23"
-          check-latest: true
-
-      - name: Format
-        run: |
-          OUT="$(go fmt $(go list ./... | grep -v /vendor/) 2>&1)"
-          if [ -n "$OUT" ]; then
-              echo "The following files are not correctly formatted"
-              echo "${OUT}"
-              exit 1
-          fi
+      - run: go test -json ./...
+      - run: test -z $(gofmt -l .); gofmt -l .
+      - run: go build ./...
