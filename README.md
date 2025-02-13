@@ -1,6 +1,5 @@
 # Graph
 
-[![Lint commit message](https://github.com/yannickkirschen/graph/actions/workflows/commit-lint.yml/badge.svg)](https://github.com/yannickkirschen/graph/actions/workflows/commit-lint.yml)
 [![Go](https://github.com/yannickkirschen/graph/actions/workflows/go.yml/badge.svg)](https://github.com/yannickkirschen/graph/actions/workflows/go.yml)
 [![GitHub release](https://img.shields.io/github/release/yannickkirschen/graph.svg)](https://github.com/yannickkirschen/graph/releases/)
 
